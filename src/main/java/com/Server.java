@@ -18,8 +18,10 @@ import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.Delimiters;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
+import org.apache.log4j.Logger;
 
 public class Server {
+    private static final Logger logger = Logger.getLogger(Server.class);
 
 	public static void main(String[] args) {
 		EventLoopGroup bossGroup = new NioEventLoopGroup();
@@ -44,7 +46,7 @@ public class Server {
             // 服务器绑定端口监听
             ChannelFuture f;
 			f = b.bind(8080).sync();
-            System.out.println("Server启动，监听在8080端口...");
+            logger.info("netty service start, listening on port 8080 ...");
             // 监听服务器关闭监听
 			f.channel().closeFuture().sync();
             // 可以简写为

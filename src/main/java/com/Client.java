@@ -23,9 +23,10 @@ import com.talk.codec.decoder.JsonDecoder;
 import com.talk.codec.encoder.JsonEncoder;
 import com.talk.handler.ClientHandler;
 import com.talk.mode.Request;
+import org.apache.log4j.Logger;
 
 public class Client {
-    
+    private static final Logger logger = Logger.getLogger(Client.class);
     public static String host = "127.0.0.1";
     public static int port = 8080;
 
@@ -47,17 +48,12 @@ public class Client {
                 protected void initChannel(SocketChannel ch) throws Exception {
                     ChannelPipeline pipeline = ch.pipeline();
 
-                    /**pipeline.addLast("framer", new DelimiterBasedFrameDecoder(8192, Delimiters.lineDelimiter()));
-                    pipeline.addLast("decoder", new StringDecoder());
-                    pipeline.addLast("encoder", new StringEncoder());
-                     */
                     pipeline.addLast("decoder", new HeaderDecoder());
                     pipeline.addLast("pDecoder", new JsonDecoder());
 
                     pipeline.addLast("hEncoder", new HeaderEncoder());
                     pipeline.addLast("pEncoder", new JsonEncoder());
 
-                    
                     // 客户端的逻辑
                     pipeline.addLast("handler", new ClientHandler());
                 }
@@ -66,7 +62,7 @@ public class Client {
             ChannelFuture f = b.connect().sync();        //6
 
             f.channel().closeFuture().sync();            //
-            System.out.println("Client启动，监听在8080端口...");
+            logger.info("netty client start, listening on port 8080 ...");
             
         } finally {
             // The connection is closed automatically on shutdown.
